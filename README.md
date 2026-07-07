@@ -1,11 +1,11 @@
 **Language:** English | [简体中文](README_zh.md)
 
-# AirymaxOS CloudNative
+# agentrt-liunx CloudNative (AirymaxOS CloudNative)
 
 [![Version](https://img.shields.io/badge/version-0.1.1-5a6b7e)](https://atomgit.com/openairymax/cloudnative)
 [![License](https://img.shields.io/badge/license-AGPL--3.0+Apache--2.0-4a90d9)](LICENSE)
 
-> Cloud-native subsystem of [AirymaxOS](https://atomgit.com/openairymax/agentrt-linux) — the AI Agent Operating System.
+> Cloud-native subsystem of [agentrt-liunx（AirymaxOS）](https://atomgit.com/openairymax/agentrt-linux) — the AI Agent Operating System.
 > One of the leaf repositories aggregated by the [agentrt-linux](https://atomgit.com/openairymax/agentrt-linux) management repo.
 > Reuses and extends the Airymax `gateway` and `sdk` modules for OS-level cloud-native orchestration.
 
@@ -13,24 +13,24 @@
 
 ## Overview
 
-The **AirymaxOS CloudNative** (`airymaxos-cloudnative`) is the cloud-native orchestration subsystem of AirymaxOS, the AI Agent Operating System. It delivers Kubernetes CRDs for agent workloads, a containerd shim for agent-aware runtime, OCI image conventions, CNI networking, the `agentctl` CLI, and the hyper-node OS image — the surface that packages, schedules and operates AirymaxOS agents across cloud-native infrastructure.
+The **agentrt-liunx CloudNative (AirymaxOS CloudNative)** (`airymaxos-cloudnative`) is the cloud-native orchestration subsystem of agentrt-liunx（AirymaxOS）, the AI Agent Operating System. It delivers Kubernetes CRDs for agent workloads, a containerd shim for agent-aware runtime, OCI image conventions, CNI networking, the `agentctl` CLI, and the hyper-node OS image — the surface that packages, schedules and operates agentrt-liunx agents across cloud-native infrastructure.
 
-In Airymax 0.1.1, this repository is a **placeholder** containing only design documents, openEuler reference specifications, and architectural drafts. Actual kernel and OS development takes place in version 1.0.1.
+In agentrt-liunx 0.1.1, this repository is **documentation complete** (文档体系完成) containing design documents, reference distribution specifications, and architectural drafts. Actual kernel and OS development takes place in version 1.0.1.
 
 ### Core Technologies
 
 - **Kubernetes CRD** — custom resources modelling agents, cognition loops and hyper-nodes
-- **containerd shim** — agent-aware runtime shim integrating with the AirymaxOS Cognition engine
+- **containerd shim** — agent-aware runtime shim integrating with the agentrt-liunx Cognition engine
 - **OCI image** conventions for reproducible, signed agent and OS artifacts
 - **CNI** networking for hyper-node interconnect and agent communication
-- **agentctl** — unified CLI for deploying, inspecting and operating AirymaxOS agents
-- **Hyper-node OS** — the minimal OS image that boots a hyper-node and joins the AirymaxOS mesh
+- **agentctl** — unified CLI for deploying, inspecting and operating agentrt-liunx agents
+- **Hyper-node OS** — the minimal OS image that boots a hyper-node and joins the agentrt-liunx mesh
 
 ### Relationship with Airymax gateway + sdk
 
-The AirymaxOS CloudNative reuses and extends the `gateway` and `sdk` modules from the Airymax runtime platform. The gateway routing, control-plane abstractions and SDK client surface are shared between the user-space runtime (agentrt) and the OS-level cloud-native layer (AirymaxOS), ensuring architectural homology with no adaptation layer.
+The agentrt-liunx CloudNative (AirymaxOS CloudNative) reuses and extends the `gateway` and `sdk` modules from the Airymax runtime platform. The gateway routing, control-plane abstractions and SDK client surface are shared between the user-space runtime (agentrt) and the OS-level cloud-native layer (agentrt-liunx), ensuring architectural homology with no adaptation layer.
 
-## Repository Structure (0.1.1 Placeholder)
+## Repository Structure (0.1.1 Documentation Complete)
 
 ```
 cloudnative/
@@ -41,20 +41,20 @@ cloudnative/
 └── .gitignore
 ```
 
-Design documents and openEuler reference specifications are maintained in the `docs/AirymaxAgentOS/` directory of the umbrella repository.
+Design documents and reference distribution specifications are maintained in the `docs/AirymaxAgentOS/` directory of the umbrella repository.
 
 ## Upstream & Downstream Dependencies
 
 ### Upstream
 
-- **AirymaxOS Kernel** — provides the kernel image and primitives that the hyper-node OS image ships
-- **AirymaxOS System** — provides the RPM/dnf packaging surface consumed by the hyper-node OS image
+- **agentrt-liunx Kernel (AirymaxOS Kernel)** — provides the kernel image and primitives that the hyper-node OS image ships
+- **agentrt-liunx System (AirymaxOS System)** — provides the RPM/dnf packaging surface consumed by the hyper-node OS image
 - **Airymax gateway + sdk** — provides the gateway routing and SDK client surface that are reused and extended
 
 ### Downstream
 
-- **Cluster operators** — deploy and operate AirymaxOS agents via the CRD and agentctl surface
-- **Hyper-node fleet** — boots the hyper-node OS image and joins the AirymaxOS mesh
+- **Cluster operators** — deploy and operate agentrt-liunx agents via the CRD and agentctl surface
+- **Hyper-node fleet** — boots the hyper-node OS image and joins the agentrt-liunx mesh
 
 ## Branch Strategy
 

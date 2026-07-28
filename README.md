@@ -1,36 +1,44 @@
 **Language:** English | [简体中文](README_zh.md)
 
-# agentrt-linux CloudNative (AirymaxOS CloudNative)
+# cloudnative — agentrt-linux (AirymaxOS) CloudNative
 
 [![Version](https://img.shields.io/badge/version-0.1.1-5a6b7e)](https://atomgit.com/openairymax/cloudnative)
 [![License](https://img.shields.io/badge/license-AGPL--3.0+Apache--2.0-4a90d9)](LICENSE)
 
-> Cloud-native subsystem of [agentrt-linux（AirymaxOS）](https://atomgit.com/openairymax/agentrt-linux) — the AI Agent Operating System.
-> One of the leaf repositories aggregated by the [agentrt-linux](https://atomgit.com/openairymax/agentrt-linux) management repo.
+> Cloud-native subsystem of [agentrt-linux (AirymaxOS)](https://atomgit.com/openairymax/agentrt-linux) — the AI Agent Operating System.
+> One of the 8 leaf repositories aggregated by the [agentrt-linux](https://atomgit.com/openairymax/agentrt-linux) management repo.
 > Reuses and extends the Airymax `gateway` and `sdk` modules for OS-level cloud-native orchestration.
+
+Copyright (c) 2025-2026 SPHARX Ltd. All Rights Reserved.
 
 ---
 
-## Overview
+## Positioning
 
-The **agentrt-linux CloudNative (AirymaxOS CloudNative)** (`airymaxos-cloudnative`) is the cloud-native orchestration subsystem of agentrt-linux（AirymaxOS）, the AI Agent Operating System. It delivers Kubernetes CRDs for agent workloads, a containerd shim for agent-aware runtime, OCI image conventions, CNI networking, the `agentctl` CLI, and the hyper-node OS image — the surface that packages, schedules and operates agentrt-linux agents across cloud-native infrastructure.
+The **cloudnative** leaf repository is the cloud-native orchestration subsystem of
+agentrt-linux (AirymaxOS). It delivers Kubernetes CRDs for agent workloads, a
+containerd shim for agent-aware runtime, OCI image conventions, CNI networking,
+the `agentctl` CLI, and the hyper-node OS image — the surface that packages,
+schedules and operates agentrt-linux agents across cloud-native infrastructure.
 
-In agentrt-linux 0.1.1, this repository is **documentation complete** (文档体系完成) containing design documents, reference distribution specifications, and architectural drafts. Actual kernel and OS development takes place in version 1.0.1.
+## Core Responsibilities
 
-### Core Technologies
+- **Kubernetes CRD** — custom resources modelling agents, cognition loops and hyper-nodes.
+- **containerd shim** — agent-aware runtime shim integrating with the `cognition` engine.
+- **OCI image** conventions for reproducible, signed agent and OS artifacts.
+- **CNI** networking for hyper-node interconnect and agent communication.
+- **agentctl** — unified CLI for deploying, inspecting and operating agentrt-linux agents.
+- **Hyper-node OS** — the minimal OS image that boots a hyper-node and joins the agentrt-linux mesh.
 
-- **Kubernetes CRD** — custom resources modelling agents, cognition loops and hyper-nodes
-- **containerd shim** — agent-aware runtime shim integrating with the agentrt-linux Cognition engine
-- **OCI image** conventions for reproducible, signed agent and OS artifacts
-- **CNI** networking for hyper-node interconnect and agent communication
-- **agentctl** — unified CLI for deploying, inspecting and operating agentrt-linux agents
-- **Hyper-node OS** — the minimal OS image that boots a hyper-node and joins the agentrt-linux mesh
+## Relationship with Airymax `gateway` + `sdk`
 
-### Relationship with Airymax gateway + sdk
+The cloudnative leaf repo reuses and extends the `gateway` and `sdk` modules from
+the Airymax runtime platform. The gateway routing, control-plane abstractions and
+SDK client surface are shared between the user-space runtime (`agentrt`) and the
+OS-level cloud-native layer, ensuring architectural homology with no adaptation
+layer.
 
-The agentrt-linux CloudNative (AirymaxOS CloudNative) reuses and extends the `gateway` and `sdk` modules from the Airymax runtime platform. The gateway routing, control-plane abstractions and SDK client surface are shared between the user-space runtime (agentrt) and the OS-level cloud-native layer (agentrt-linux), ensuring architectural homology with no adaptation layer.
-
-## Repository Structure (0.1.1 Documentation Complete)
+## Document & File List
 
 ```
 cloudnative/
@@ -38,30 +46,45 @@ cloudnative/
 ├── README_zh.md        # Chinese translation
 ├── LICENSE             # AGPL-3.0 + Apache-2.0 dual license
 ├── NOTICE              # Copyright, trademark and third-party notices
-└── .gitignore
+├── .gitignore
+└── .github/
+    └── README.md       # GitHub automation for this leaf repo
 ```
 
-Design documents and reference distribution specifications are maintained in the `docs/AirymaxAgentOS/` directory of the umbrella repository.
+Design documents and reference distribution specifications are maintained in the
+`docs/AirymaxOS/` directory of the umbrella documentation repository.
 
-## Upstream & Downstream Dependencies
+## CI Status
 
-### Upstream
+CloudNative changes are governed by management-repository workflows (each ≤ 2 jobs):
 
-- **agentrt-linux Kernel (AirymaxOS Kernel)** — provides the kernel image and primitives that the hyper-node OS image ships
-- **agentrt-linux System (AirymaxOS System)** — provides the RPM/dnf packaging surface consumed by the hyper-node OS image
-- **Airymax gateway + sdk** — provides the gateway routing and SDK client surface that are reused and extended
+| Workflow | Jobs | Applies to cloudnative via |
+|----------|------|------------------------------|
+| `mgmt-orchestrator.yml` | `file-integrity` + `orchestrate-leaf-ci` | Verifies the `cloudnative/` submodule dir; aggregates this repo's CI status |
+| `release.yml` | `build-and-sign` (SBOM scan of `cloudnative/`; OCI image signed with cosign) + `publish-release` (push OCI image to registry) | Release tag |
+| `nightly.yml` | `nightly-test-suite` (chaos: net partition) + `nightly-revert-or-budget` | Nightly cron |
+| `ssot-validate.yml` | `ssot-syntax-and-rules` + `ssot-cross-ref` | When docs reference cloud-native rules |
 
-### Downstream
+Language-level CI (Go for CRD/controller, Rust for containerd shim, OCI image
+build) is delegated to this leaf repository's own `.github/workflows/`.
 
-- **Cluster operators** — deploy and operate agentrt-linux agents via the CRD and agentctl surface
-- **Hyper-node fleet** — boots the hyper-node OS image and joins the agentrt-linux mesh
+## Development Guide
 
-## Branch Strategy
+- **Branch**: `feature/official-hubs-01` (the management repo stays on `main`).
+- **DCO**: every commit must be `Signed-off-by` (`git commit -s`).
+- **Commit prefix**: `cloudnative:`.
+- **Code style**: Go — `gofmt`; Rust — `cargo fmt` (4-space); run formatters before submitting.
+- **OCI signing**: release OCI images are signed with cosign (key in CI secret `COSIGN_KEY`).
+- **Function prefix**: `airy_*` for any kernel-adjacent helpers.
 
-This leaf repository is developed on **`feature/official-hubs-01`**. The aggregating `agentrt-linux` management repo stays on `main`.
+## Upstream & Downstream
+
+- **Upstream** — `kernel` (kernel image for the hyper-node OS); `system` (RPM/dnf packaging surface); Airymax `gateway` + `sdk`.
+- **Downstream** — cluster operators (deploy via CRD + `agentctl`); hyper-node fleet (boots the hyper-node OS image and joins the mesh).
 
 ## License
 
-Dual-licensed under **AGPL v3 + Apache 2.0** (SPDX: `AGPL-3.0-or-later OR Apache-2.0`). See [LICENSE](LICENSE) for the full text.
+Dual-licensed under **AGPL v3 + Apache 2.0** (SPDX: `AGPL-3.0-or-later OR Apache-2.0`).
+See [LICENSE](LICENSE) for the full text.
 
 Copyright (c) 2025-2026 SPHARX Ltd. All Rights Reserved.

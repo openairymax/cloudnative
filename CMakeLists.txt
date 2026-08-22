@@ -1,5 +1,5 @@
 # ===========================================================================
-# agentrt-linux (AirymaxOS) cloudnative submodule CMakeLists.txt
+# agent-linux (AirymaxOS) cloudnative submodule CMakeLists.txt
 # 构建入口：agentctl CLI + CRD + Controller + Scheduler + Registry + Packager
 # 决策 F1：最小可编译骨架（非桩）
 # ===========================================================================

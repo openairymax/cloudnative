@@ -1,12 +1,12 @@
 **Language:** English | [简体中文](README_zh.md)
 
-# cloudnative — agentrt-linux (AirymaxOS) CloudNative
+# cloudnative — agent-linux (AirymaxOS) CloudNative
 
 [![Version](https://img.shields.io/badge/version-0.1.1-5a6b7e)](https://atomgit.com/openairymax/cloudnative)
 [![License](https://img.shields.io/badge/license-AGPL--3.0+Apache--2.0-4a90d9)](LICENSE)
 
-> Cloud-native subsystem of [agentrt-linux (AirymaxOS)](https://atomgit.com/openairymax/agentrt-linux) — the AI Agent Operating System.
-> One of the 8 leaf repositories aggregated by the [agentrt-linux](https://atomgit.com/openairymax/agentrt-linux) management repo.
+> Cloud-native subsystem of [agent-linux (AirymaxOS)](https://atomgit.com/openairymax/agent-linux) — the AI Agent Operating System.
+> One of the 8 leaf repositories aggregated by the [agent-linux](https://atomgit.com/openairymax/agent-linux) management repo.
 > Reuses and extends the Airymax `gateway` and `sdk` modules for OS-level cloud-native orchestration.
 
 Copyright (c) 2025-2026 SPHARX Ltd. All Rights Reserved.
@@ -16,10 +16,10 @@ Copyright (c) 2025-2026 SPHARX Ltd. All Rights Reserved.
 ## Positioning
 
 The **cloudnative** leaf repository is the cloud-native orchestration subsystem of
-agentrt-linux (AirymaxOS). It delivers Kubernetes CRDs for agent workloads, a
+agent-linux (AirymaxOS). It delivers Kubernetes CRDs for agent workloads, a
 containerd shim for agent-aware runtime, OCI image conventions, CNI networking,
 the `agentctl` CLI, and the hyper-node OS image — the surface that packages,
-schedules and operates agentrt-linux agents across cloud-native infrastructure.
+schedules and operates agent-linux agents across cloud-native infrastructure.
 
 ## Core Responsibilities
 
@@ -27,8 +27,8 @@ schedules and operates agentrt-linux agents across cloud-native infrastructure.
 - **containerd shim** — agent-aware runtime shim integrating with the `cognition` engine.
 - **OCI image** conventions for reproducible, signed agent and OS artifacts.
 - **CNI** networking for hyper-node interconnect and agent communication.
-- **agentctl** — unified CLI for deploying, inspecting and operating agentrt-linux agents.
-- **Hyper-node OS** — the minimal OS image that boots a hyper-node and joins the agentrt-linux mesh.
+- **agentctl** — unified CLI for deploying, inspecting and operating agent-linux agents.
+- **Hyper-node OS** — the minimal OS image that boots a hyper-node and joins the agent-linux mesh.
 
 ## Relationship with Airymax `gateway` + `sdk`
 

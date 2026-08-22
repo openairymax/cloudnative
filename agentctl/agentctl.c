@@ -17,7 +17,7 @@
  * 决策 F1：真实可编译实现（非桩，非空 main）。
  *   默认无参数时打印版本横幅与 A-IPC magic 校验结果。
  *
- * [IND] 完全独立层（agentrt-linux 专属实现）。
+ * [IND] 完全独立层（agent-linux 专属实现）。
  *
  * 相关文档：
  *   docs/AirymaxOS/10-architecture/07-directory-structure.md §4.6

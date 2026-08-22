@@ -22,7 +22,7 @@ cloudnative 子仓负责 AirymaxOS 的云原生控制面，包括：
 
 ### IRON-9 主层
 
-- `[IND]`：全部组件均为 agentrt-linux 专属实现
+- `[IND]`：全部组件均为 agent-linux 专属实现
 - `[SC]`：与 agentrt 共享 `ipc.h`（A-IPC 消息头）等契约
 
 ## 2. 开发环境要求

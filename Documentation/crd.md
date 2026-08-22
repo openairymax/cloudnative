@@ -73,7 +73,7 @@ CRD 字段必须与 [SC] 类型严格对应，确保用户态 YAML 描述与内�
 | 层级 | 实体 | 说明 |
 |------|------|------|
 | `[SC]` | CRD 字段映射的类型 | 跨用户态/内核态共享 |
-| `[IND]` | CRD YAML schema 与 controller 实现 | agentrt-linux 专属 |
+| `[IND]` | CRD YAML schema 与 controller 实现 | agent-linux 专属 |
 
 ## 5. 当前实现状态
 

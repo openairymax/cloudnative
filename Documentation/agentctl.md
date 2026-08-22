@@ -105,7 +105,7 @@ sudo make install
 |------|------|------|
 | `[SC]` | `AIRY_IPC_MAGIC` | 与 agentrt 共享 A-IPC 消息头 magic |
 | `[SC]` | `struct airy_ipc_msg_hdr` | 共享消息头布局 |
-| `[IND]` | agentctl CLI 实现 | agentrt-linux 专属 |
+| `[IND]` | agentctl CLI 实现 | agent-linux 专属 |
 
 agentrt 用户态有对应的 `airyctl` 工具（ecosystem/airyctl），
 两者通过 [SC] 共享 A-IPC 契约，但 CLI 实现完全独立。

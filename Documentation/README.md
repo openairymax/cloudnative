@@ -28,6 +28,6 @@ License: GPL-2.0-only
 
 ## 相关文档
 
-- [07-directory-structure.md](../../../docs/AirymaxOS/10-architecture/07-directory-structure.md) §4.6 — cloudnative 子仓完整目录结构
+- [07-directory-structure.md](../../../docs/docs-linux/10-architecture/07-directory-structure.md) §4.6 — cloudnative 子仓完整目录结构
 - [ipc.h](../../kernel/include/uapi/linux/airymax/ipc.h) — [SC] A-IPC 消息头契约
 - 顶层 [CONTRIBUTING.md](../CONTRIBUTING.md) — cloudnative 子仓贡献指南

@@ -4,7 +4,7 @@
 > **组件**：`agentctl/`
 > **可编译入口**：`agentctl/agentctl.c` → `agentctl`
 > **[SC] 依赖**：`kernel/include/uapi/linux/airymax/ipc.h`
-> **设计文档**：`docs/AirymaxOS/10-architecture/07-directory-structure.md` §4.6
+> **设计文档**：`docs/docs-linux/10-architecture/07-directory-structure.md` §4.6
 
 Copyright (c) 2025-2026 SPHARX Ltd. All Rights Reserved.
 

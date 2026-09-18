@@ -4,7 +4,7 @@
 > **组件**：`crd/`（规划中，本文件为设计占位）
 > **[SC] 依赖**：`kernel/include/uapi/linux/airymax/ipc.h`、`lsm_types.h`
 > **协同组件**：`agentctl/`（CRD 通过 agentctl 应用）
-> **设计文档**：`docs/AirymaxOS/10-architecture/07-directory-structure.md` §4.6
+> **设计文档**：`docs/docs-linux/10-architecture/07-directory-structure.md` §4.6
 
 Copyright (c) 2025-2026 SPHARX Ltd. All Rights Reserved.
 

@@ -1,7 +1,7 @@
 # `.github/` — cloudnative Leaf Repository Automation
 
 > GitHub automation directory for the **cloudnative** leaf repository of
-> [agentrt-linux (AirymaxOS)](https://atomgit.com/openairymax/agentrt-linux).
+> [agent-linux (AirymaxOS)](https://atomgit.com/openairymax/agent-linux).
 
 Copyright (c) 2025-2026 SPHARX Ltd. All Rights Reserved.
 
@@ -26,10 +26,10 @@ cloudnative/.github/
 
 | Workflow | Jobs | Relevance to cloudnative |
 |----------|------|---------------------------|
-| `mgmt-orchestrator.yml` | `file-integrity` + `orchestrate-leaf-ci` | Verifies the `cloudnative/` submodule dir exists; aggregates this repo's CI status |
+| `mgmt-verify.yml` | `file-integrity` + `orchestrate-leaf-ci` | Verifies the `cloudnative/` submodule dir exists; aggregates this repo's CI status |
 | `release.yml` | `build-and-sign` + `publish-release` | `syft cloudnative/` SBOM; OCI image built, signed with cosign, pushed to `ghcr.io/openairymax/airymaxos:<tag>` |
 | `nightly.yml` | `nightly-test-suite` + `nightly-revert-or-budget` | Chaos injection (net partition) validates hyper-node interconnect resilience |
-| `ssot-validate.yml` | `ssot-syntax-and-rules` + `ssot-cross-ref` | Validates rule IDs referenced in cloud-native documentation |
+| `ssot-verify.yml` | `ssot-syntax-and-rules` + `doc-links` | Validates rule IDs referenced in cloud-native documentation |
 
 ## Development Guide
 

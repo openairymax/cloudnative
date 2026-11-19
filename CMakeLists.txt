@@ -21,10 +21,13 @@ set(CMAKE_C_EXTENSIONS OFF)
 # ---------------------------------------------------------------------------
 # [SC] 头文件引用（OS-IRON-014 / 决策 G1）
 # 唯一物理宿主：kernel/include/uapi/linux/airymax/
-# 禁止物理副本，通过 -I 引用
+# 禁止物理副本，通过 -idirafter 引用
 # ---------------------------------------------------------------------------
-include_directories(${CMAKE_SOURCE_DIR}/../kernel/include)
-include_directories(${CMAKE_SOURCE_DIR}/../kernel/include/uapi/linux)
+# 与 services 同一做法：该树是内核 UAPI 副本，用 -idirafter 置于系统头
+# 之后。这样 <linux/airymax/*> 由本树解析，而 <linux/types.h> 等仍取
+# glibc 的已安装 UAPI 头；用 -I 会反过来遮蔽系统头，且 uapi 树里的
+# linux/stddef.h 依赖内核构建内部头，用户态不可直接引用。
+add_compile_options(-idirafter ${CMAKE_SOURCE_DIR}/../kernel/include/uapi)
 
 # ---------------------------------------------------------------------------
 # 编译选项（OS-STD-FMT-001/002）

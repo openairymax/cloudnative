@@ -34,8 +34,8 @@
 #include <string.h>
 #include <unistd.h>
 
-/* [SC] 共享契约头文件（通过 -I../kernel/include/uapi/linux 引用） */
-#include <airymax/ipc.h>
+/* [SC] 共享契约头文件（通过 -I../kernel/include/uapi 引用） */
+#include <linux/airymax/ipc.h>
 
 /* ─── 常量 ──────────────────────────────────────────────────────────── */
 

@@ -9,7 +9,7 @@ add_executable(agentctl
 	agentctl.c
 )
 
-# [SC] 头文件引用已由顶层 CMakeLists.txt 通过 include_directories 配置
+# [SC] 头文件搜索根由顶层 CMakeLists.txt 统一登记
 
 # 编译定义
 target_compile_definitions(agentctl

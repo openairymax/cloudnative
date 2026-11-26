@@ -20,13 +20,19 @@ set(CMAKE_C_EXTENSIONS OFF)
 
 # ---------------------------------------------------------------------------
 # [SC] 头文件引用（OS-IRON-014 / 决策 G1）
-# 唯一物理宿主：kernel/include/uapi/linux/airymax/
-# 禁止物理副本；按 uapi 约定登记搜索根，契约头之间的相互引用
-# 同时需要 <airymax/...> 与 <linux/airymax/...> 两个前缀。
-# 使用 -idirafter 让 libc 头始终优先，内核内部头目录不参与用户态编译。
+# 唯一物理宿主：kernel/include/uapi/linux/airymax/，禁止物理副本。
+# 用户态只能针对 headers_install 导出的 UAPI 头构建：源码树的
+# kernel/include/uapi 依赖 __EXPORTED_HEADERS__ 与内核内部头，
+# 直接当搜索根会与 libc 的 loff_t/blkcnt_t 等定义冲突。
+# 与 tests-linux 保持同一约定，导出根经 -DAIRY_HDR_ROOT 传入。
 # ---------------------------------------------------------------------------
-add_compile_options(-idirafter ${CMAKE_SOURCE_DIR}/../kernel/include/uapi)
-add_compile_options(-idirafter ${CMAKE_SOURCE_DIR}/../kernel/include/uapi/linux)
+if(NOT AIRY_HDR_ROOT)
+	message(FATAL_ERROR
+		"AIRY_HDR_ROOT 未设置。先执行 make -C ../kernel O=<build>/kobj "
+		"headers_install INSTALL_HDR_PATH=<build>/hdr，"
+		"再传 -DAIRY_HDR_ROOT=<build>/hdr/include。")
+endif()
+include_directories(${AIRY_HDR_ROOT})
 
 # ---------------------------------------------------------------------------
 # 编译选项（OS-STD-FMT-001/002）

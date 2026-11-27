@@ -1,0 +1,170 @@
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# Agent 自定义资源定义（agent.airymaxos.dev/v1）
+#
+# 字段语义见 docs-linux/150-cloudnative/01-k8s-crd-design.md §2.1。
+# 本文件是集群侧的声明来源；本地校验以 crd/ 内的模式表为准，
+# 两处的必填、枚举与区间必须一致，由 ci/gates/crd-schema.sh 断言。
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: agents.agent.airymaxos.dev
+spec:
+  group: agent.airymaxos.dev
+  names:
+    kind: Agent
+    listKind: AgentList
+    plural: agents
+    singular: agent
+    shortNames:
+      - ag
+  scope: Namespaced
+  versions:
+    - name: v1
+      served: true
+      storage: true
+      additionalPrinterColumns:
+        - name: State
+          type: string
+          jsonPath: .status.state
+        - name: TokensLeft
+          type: integer
+          jsonPath: .status.tokensRemaining
+      schema:
+        openAPIV3Schema:
+          type: object
+          required:
+            - spec
+          properties:
+            spec:
+              type: object
+              required:
+                - image
+                - tokenBudget
+              properties:
+                image:
+                  type: string
+                  description: Agent 容器镜像地址
+                  pattern: '^[a-zA-Z0-9./:_-]+$'
+                imagePullPolicy:
+                  type: string
+                  enum: [Always, IfNotPresent, Never]
+                  default: IfNotPresent
+                tokenBudget:
+                  type: object
+                  required:
+                    - total
+                  properties:
+                    total:
+                      type: integer
+                      minimum: 1
+                      description: 总 Token 预算
+                    perRequestLimit:
+                      type: integer
+                      minimum: 1
+                      description: 单次请求上限
+                    refillRate:
+                      type: integer
+                      minimum: 0
+                      description: 补充速率（tokens/秒）
+                    policy:
+                      type: string
+                      enum: [throttle, suspend, hardFail]
+                      default: throttle
+                      description: 超额策略
+                memoryRovol:
+                  type: object
+                  properties:
+                    enabled:
+                      type: boolean
+                      default: false
+                    layers:
+                      type: array
+                      minItems: 1
+                      maxItems: 4
+                      items:
+                        type: string
+                        enum: [L1, L2, L3, L4]
+                    capacity:
+                      type: string
+                      default: "100Gi"
+                    forgettingStrategy:
+                      type: string
+                      enum: [NONE, EBBINGHAUS, LINEAR, ACCESS_BASED]
+                      default: EBBINGHAUS
+                cognition:
+                  type: object
+                  properties:
+                    cycle:
+                      type: string
+                      enum: [CoreLoopThree]
+                      default: CoreLoopThree
+                    scheduler:
+                      type: string
+                      enum: [stc_agent, SCHED_NORMAL]
+                      default: stc_agent
+                    thinkMode:
+                      type: string
+                      enum: [t2, t1-f, t1-p, dual]
+                      default: dual
+                security:
+                  type: object
+                  properties:
+                    capabilities:
+                      type: array
+                      items:
+                        type: string
+                      description: Cupolas capability 列表
+                    landlockPaths:
+                      type: array
+                      items:
+                        type: string
+                      description: Landlock 允许路径
+                    seccompProfile:
+                      type: string
+                      default: agentrt-default
+                resources:
+                  type: object
+                  properties:
+                    cpu:
+                      type: string
+                      default: "2"
+                    memory:
+                      type: string
+                      default: "4Gi"
+                    pids:
+                      type: integer
+                      minimum: 1
+                      default: 100
+                nodeSelector:
+                  type: object
+                  additionalProperties:
+                    type: string
+                  description: 节点选择器（默认选 agent-linux 节点）
+            status:
+              type: object
+              properties:
+                agentId:
+                  type: integer
+                  description: 内核分配的 Agent ID
+                state:
+                  type: string
+                  enum: [Creating, Registered, Ready, Running,
+                         Blocked, Suspended, Terminating, Dead]
+                tokensUsed:
+                  type: integer
+                tokensRemaining:
+                  type: integer
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      status:
+                        type: string
+                        enum: [True, False, Unknown]
+                      lastTransitionTime:
+                        type: string
+                        format: date-time

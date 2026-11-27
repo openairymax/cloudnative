@@ -1,0 +1,50 @@
+{
+  "apiVersion": "agent.airymaxos.dev/v1",
+  "kind": "Agent",
+  "metadata": {
+    "name": "cognition-agent-01",
+    "namespace": "production"
+  },
+  "spec": {
+    "image": "registry.airymaxos.dev/cognition:v1.0.1",
+    "imagePullPolicy": "IfNotPresent",
+    "tokenBudget": {
+      "total": 1000000,
+      "perRequestLimit": 10000,
+      "refillRate": 100,
+      "policy": "throttle"
+    },
+    "memoryRovol": {
+      "enabled": true,
+      "layers": ["L1", "L2", "L3", "L4"],
+      "capacity": "100Gi",
+      "forgettingStrategy": "EBBINGHAUS"
+    },
+    "cognition": {
+      "cycle": "CoreLoopThree",
+      "scheduler": "stc_agent",
+      "thinkMode": "dual"
+    },
+    "security": {
+      "capabilities": [
+        "AIRY_CAP_MEMORY_READ",
+        "AIRY_CAP_MEMORY_WRITE",
+        "AIRY_CAP_IPC_SEND"
+      ],
+      "landlockPaths": [
+        "/var/lib/agentrt/agent-01/data",
+        "/var/log/agentrt/agent-01"
+      ],
+      "seccompProfile": "agentrt-default"
+    },
+    "resources": {
+      "cpu": "4",
+      "memory": "8Gi",
+      "pids": 200
+    },
+    "nodeSelector": {
+      "airymaxos.dev/node-type": "agent-linux",
+      "airymaxos.dev/user-sched": "true"
+    }
+  }
+}

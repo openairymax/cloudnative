@@ -1,0 +1,66 @@
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# AgentBudget 自定义资源定义（agent.airymaxos.dev/v1）
+#
+# 命名空间级的 Token 配额：总预算、补充速率、超额策略与统计窗口。
+# Agent 的 tokenBudget 可引用本资源，引用解析由控制器完成。
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: agentbudgets.agent.airymaxos.dev
+spec:
+  group: agent.airymaxos.dev
+  names:
+    kind: AgentBudget
+    listKind: AgentBudgetList
+    plural: agentbudgets
+    singular: agentbudget
+    shortNames:
+      - abg
+  scope: Namespaced
+  versions:
+    - name: v1
+      served: true
+      storage: true
+      additionalPrinterColumns:
+        - name: Remaining
+          type: integer
+          jsonPath: .status.remaining
+      schema:
+        openAPIV3Schema:
+          type: object
+          required:
+            - spec
+          properties:
+            spec:
+              type: object
+              required:
+                - total
+              properties:
+                total:
+                  type: integer
+                  minimum: 1
+                refillRate:
+                  type: integer
+                  minimum: 0
+                  description: 每秒补充的 Token 数
+                policy:
+                  type: string
+                  enum: [throttle, suspend, hardFail]
+                  default: throttle
+                windowSeconds:
+                  type: integer
+                  minimum: 1
+                  default: 60
+                  description: 统计窗口长度
+            status:
+              type: object
+              properties:
+                used:
+                  type: integer
+                  minimum: 0
+                remaining:
+                  type: integer
+                  minimum: 0
+                exhausted:
+                  type: boolean

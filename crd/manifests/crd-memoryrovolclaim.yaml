@@ -1,0 +1,65 @@
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# MemoryRovolClaim 自定义资源定义（agent.airymaxos.dev/v1）
+#
+# 记忆卷载声明：层次、容量、遗忘策略与回收策略。绑定时由
+# MemoryRovol CSI 插件落地为节点上的挂载点，控制器只读状态。
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: memoryrovolclaims.agent.airymaxos.dev
+spec:
+  group: agent.airymaxos.dev
+  names:
+    kind: MemoryRovolClaim
+    listKind: MemoryRovolClaimList
+    plural: memoryrovolclaims
+    singular: memoryrovolclaim
+    shortNames:
+      - mrc
+  scope: Namespaced
+  versions:
+    - name: v1
+      served: true
+      storage: true
+      additionalPrinterColumns:
+        - name: Phase
+          type: string
+          jsonPath: .status.phase
+      schema:
+        openAPIV3Schema:
+          type: object
+          required:
+            - spec
+          properties:
+            spec:
+              type: object
+              required:
+                - layers
+              properties:
+                layers:
+                  type: array
+                  minItems: 1
+                  maxItems: 4
+                  items:
+                    type: string
+                    enum: [L1, L2, L3, L4]
+                capacity:
+                  type: string
+                  default: "100Gi"
+                forgettingStrategy:
+                  type: string
+                  enum: [NONE, EBBINGHAUS, LINEAR, ACCESS_BASED]
+                  default: EBBINGHAUS
+                reclaimPolicy:
+                  type: string
+                  enum: [Retain, Delete]
+                  default: Retain
+            status:
+              type: object
+              properties:
+                phase:
+                  type: string
+                  enum: [Pending, Bound, Released]
+                mountPath:
+                  type: string

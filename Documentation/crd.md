@@ -1,10 +1,12 @@
-# CRD — AiryAgent / AiryService 自定义资源定义
+# SPDX-License-Identifier: GPL-2.0-only
+
+# CRD — Agent 自定义资源
 
 > **子仓**：`cloudnative/`
-> **组件**：`crd/`（规划中，本文件为设计占位）
-> **[SC] 依赖**：`kernel/include/uapi/linux/airymax/ipc.h`、`lsm_types.h`
-> **协同组件**：`agentctl/`（CRD 通过 agentctl 应用）
-> **设计文档**：`docs/AirymaxOS/10-architecture/07-directory-structure.md` §4.6
+> **组件**：`crd/`（模式表、校验与规划）、`manifests/`（集群声明）
+> **[SC] 依赖**：经 `cnjson` 读取 kubectl 输出的 JSON；不依赖内核头
+> **协同组件**：`agentctl/`（集群侧应用与查询）
+> **设计文档**：`docs-linux/150-cloudnative/01-k8s-crd-design.md`
 
 Copyright (c) 2025-2026 SPHARX Ltd. All Rights Reserved.
 
@@ -12,81 +14,55 @@ License: GPL-2.0-only
 
 ---
 
-## 1. 设计目标
+## 1. 资源模型
 
-CRD（Custom Resource Definition）子组件定义 AirymaxOS 在 Kubernetes
-集群中的自定义资源，使 Agent 能够以声明式方式部署与管理：
+四个自定义资源同属 `agent.airymaxos.dev/v1`，命名空间作用域：
 
-| CRD | 用途 | 关键字段 |
-|-----|------|----------|
-| `AiryAgent` | 单个 Agent 实例 | `spec.image` / `spec.capabilities` / `spec.memoryTier` |
-| `AiryService` | Agent 服务（多副本） | `spec.replicas` / `spec.agentTemplate` |
-| `AiryCapability` | Capability 配置 | `spec.perms` / `spec.epoch` |
-| `AiryMemoryPolicy` | MemoryRovol 策略 | `spec.tiers` / `spec.agingPolicy` |
+| CRD | 用途 | 关键字段 | 清单 |
+|-----|------|----------|------|
+| `Agent` | 单个 Agent 实例 | `spec.image`／`spec.tokenBudget`／`spec.cognition` | `crd/manifests/crd-agent.yaml` |
+| `AgentWorkflow` | 多 Agent 编排 | `spec.steps[].dependsOn` | `crd/manifests/crd-agentworkflow.yaml` |
+| `AgentBudget` | 命名空间配额 | `spec.total`／`spec.refillRate` | `crd/manifests/crd-agentbudget.yaml` |
+| `MemoryRovolClaim` | 记忆卷载声明 | `spec.layers`／`spec.capacity` | `crd/manifests/crd-memoryrovolclaim.yaml` |
 
-## 2. AiryAgent CRD 草案（设计）
+清单的必填、枚举与区间是本仓声明来源；`crd/` 内的模式表是本地
+判定的来源，两者由 `ci/gates/crd-schema.sh` 断言一致。
 
-```yaml
-apiVersion: airy.os/v1
-kind: AiryAgent
-metadata:
-  name: agent-example
-  namespace: default
-spec:
-  image: registry.spharx.com/airy/agent-base:0.1.1
-  capabilities:
-    - perm: SEND
-    - perm: RECV
-    - perm: CALL
-  memoryTier:
-    hot: 128Mi
-    warm: 512Mi
-    cold: 2Gi
-  cognition:
-    thinkMode: FAST
-    confidenceThreshold: 0.75
-  security:
-    capSpaceRoot: "/airy/caps/agent-example"
-    freezeOnFault: true
-status:
-  phase: Running
-  agentId: 42
-  faultCount: 0
-  lastHeartbeat: "2026-07-20T10:00:00Z"
+## 2. 本地判定与规划
+
+`airy-crdctl` 消费 `kubectl get -o json` 的输出：
+
+```
+airy-crdctl validate agent.json    # 模式通过输出 ok，失败退出码 3
+airy-crdctl plan agent.json        # 输出五步动作序列
+airy-crdctl state Running stop     # 转移表单项判定
 ```
 
-## 3. 与 [SC] 的契约映射
+`plan` 的五步顺序固定：配额准入、内核注册、记忆卷载、安全注入、
+调度切换；每行一个动作，顺序即执行顺序。输出不含时间与主机信息，
+可逐字节比对。
 
-| CRD 字段 | [SC] 类型 | 说明 |
-|----------|-----------|------|
-| `spec.capabilities[*].perm` | `AIRY_CAP_PERM_*` | 权限位（ipc.h） |
-| `spec.cognition.thinkMode` | `enum airy_think_mode` | FAST / SLOW |
-| `spec.cognition.confidenceThreshold` | `airy_q16_t` | Q16.16 定点 |
-| `spec.security.capSpaceRoot` | `struct airy_task_sec.cap_space_root` | Capability 根 |
-| `spec.memoryTier.hot/warm/cold` | `enum airy_mem_level` | L1-L4 层级 |
+## 3. 状态机
 
-CRD 字段必须与 [SC] 类型严格对应，确保用户态 YAML 描述与内核态
-数据结构语义一致。
+`Agent` 的八个状态与设计文档一致：`Creating`、`Registered`、`Ready`、
+`Running`、`Blocked`、`Suspended`、`Terminating`、`Dead`。
 
-## 4. IRON-9 同源关系
+`stop` 事件对除 `Dead`／`Terminating` 之外的所有状态进入
+`Terminating`；`die` 事件只接受 `Running`／`Blocked`／`Suspended`／
+`Terminating` 四个来源；其余组合返回拒绝，不做兜底放行。
 
-| 层级 | 实体 | 说明 |
-|------|------|------|
-| `[SC]` | CRD 字段映射的类型 | 跨用户态/内核态共享 |
-| `[IND]` | CRD YAML schema 与 controller 实现 | agentrt-linux 专属 |
+## 4. 与 [SC] 的契约
 
-## 5. 当前实现状态
+| CRD 字段 | [SC] 侧消费 | 说明 |
+|----------|-------------|------|
+| `spec.security.capabilities` | Cupolas capability 令牌 | 逐项签发，缺失即拒绝启动 |
+| `spec.security.landlockPaths` | Landlock 规则 | 路径白名单，越界访问返回 `EACCES` |
+| `spec.cognition.scheduler` | 用户态调度器 | `stc_agent` 或 `SCHED_NORMAL` |
+| `spec.tokenBudget` | 内核 Agent 注册 | 注册时签订预算契约 |
 
-0.1.1 版本中 CRD 仅作为设计占位：
+## 5. 不做的事
 
-- ✅ [SC] 类型已完成（ipc.h / lsm_types.h / cognition_types.h / memory_types.h）
-- ⏳ `crd/` 子目录与 Go CRD schema 尚未实现（1.0.1）
-- ⏳ Controller（`controller/`）尚未实现（1.0.1）
-
-当前 agentctl（0.1.1）不解析 CRD YAML，仅提供状态查询与 magic 校验。
-
-## 6. 变更历史
-
-| 版本 | 日期 | 变更 |
-|------|------|------|
-| 0.1.1 | 2026-07-20 | 初始设计文档；[SC] 类型映射草案 |
+- 不实现 API Server 的准入 webhook：模式校验在清单与本地两处闭环，
+  集群侧的拒绝由 Kubernetes 自身完成。
+- 不实现 CSI 插件本体：`MemoryRovolClaim` 只声明意图，绑定由
+  CSI 组件负责。

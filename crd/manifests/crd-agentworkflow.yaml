@@ -1,0 +1,88 @@
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# AgentWorkflow 自定义资源定义（agent.airymaxos.dev/v1）
+#
+# 多 Agent 的有向无环编排：每个步骤引用一个 Agent 资源，
+# dependsOn 声明前驱。环检测在控制器侧完成，模式只约束形状。
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: agentworkflows.agent.airymaxos.dev
+spec:
+  group: agent.airymaxos.dev
+  names:
+    kind: AgentWorkflow
+    listKind: AgentWorkflowList
+    plural: agentworkflows
+    singular: agentworkflow
+    shortNames:
+      - awf
+  scope: Namespaced
+  versions:
+    - name: v1
+      served: true
+      storage: true
+      additionalPrinterColumns:
+        - name: State
+          type: string
+          jsonPath: .status.state
+      schema:
+        openAPIV3Schema:
+          type: object
+          required:
+            - spec
+          properties:
+            spec:
+              type: object
+              required:
+                - steps
+              properties:
+                steps:
+                  type: array
+                  minItems: 1
+                  maxItems: 32
+                  items:
+                    type: object
+                    required:
+                      - name
+                      - agentRef
+                    properties:
+                      name:
+                        type: string
+                        pattern: '^[a-z0-9][a-z0-9-]{0,62}$'
+                      agentRef:
+                        type: string
+                        description: 同命名空间内的 Agent 名称
+                      dependsOn:
+                        type: array
+                        maxItems: 31
+                        items:
+                          type: string
+                      tokenBudget:
+                        type: integer
+                        minimum: 1
+                failFast:
+                  type: boolean
+                  default: true
+            status:
+              type: object
+              properties:
+                state:
+                  type: string
+                  enum: [Pending, Running, Succeeded, Failed]
+                completed:
+                  type: integer
+                  minimum: 0
+                total:
+                  type: integer
+                  minimum: 0
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      status:
+                        type: string
+                        enum: [True, False, Unknown]

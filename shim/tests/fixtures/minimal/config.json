@@ -1,0 +1,6 @@
+{
+  "ociVersion": "1.0.2",
+  "process": {
+    "args": ["/bin/true"]
+  }
+}

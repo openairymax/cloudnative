@@ -1,0 +1,9 @@
+{
+  "ociVersion": "1.0.2",
+  "process": {
+    "args": ["/bin/true"]
+  },
+  "annotations": {
+    "airymaxos.agent.memory-rovol": "L1,L5"
+  }
+}

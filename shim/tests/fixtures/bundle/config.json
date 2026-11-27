@@ -1,0 +1,20 @@
+{
+  "ociVersion": "1.0.2",
+  "process": {
+    "args": ["/bin/sh", "-c", "exit 7"],
+    "env": ["PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"],
+    "cwd": "/",
+    "terminal": false
+  },
+  "root": {
+    "path": "/",
+    "readonly": false
+  },
+  "annotations": {
+    "airymaxos.agent.token-budget": "250000",
+    "airymaxos.agent.memory-rovol": "L1,L2",
+    "airymaxos.agent.scheduler": "stc_agent",
+    "airymaxos.agent.cognition-cycle": "CoreLoopThree",
+    "airymaxos.agent.capabilities": "MEMORY_READ,MEMORY_WRITE,TOOL_EXEC"
+  }
+}

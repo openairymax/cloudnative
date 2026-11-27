@@ -61,3 +61,4 @@ if(AIRY_HDR_ROOT)
 endif()
 
 add_subdirectory(crd)
+add_subdirectory(shim)

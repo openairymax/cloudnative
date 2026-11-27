@@ -1,0 +1,10 @@
+{
+  "ociVersion": "1.0.2",
+  "process": {
+    "args": ["/bin/true"]
+  },
+  "annotations": {
+    "airymaxos.agent.scheduler": "eevdf",
+    "airymaxos.agent.memory-rovol": "disabled"
+  }
+}

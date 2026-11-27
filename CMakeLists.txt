@@ -62,3 +62,4 @@ endif()
 
 add_subdirectory(crd)
 add_subdirectory(shim)
+add_subdirectory(cni)

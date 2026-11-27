@@ -1,0 +1,25 @@
+{
+  "cniVersion": "1.0.0",
+  "name": "agentrt",
+  "type": "airymaxos-cni",
+  "cupolasEnabled": true,
+  "defaultDeny": true,
+  "auditEnabled": true,
+  "allowedPeers": ["cognition-agent", "planner-agent"],
+  "ingressPorts": [7766, 7767],
+  "egressPorts": [53, 443],
+  "egressExceptions": ["10.0.0.0/8", "169.254.0.0/16"],
+  "stateDir": "state",
+  "prevResult": {
+    "cniVersion": "1.0.0",
+    "interfaces": [
+      {"name": "eth0", "sandbox": "/var/run/netns/agent"}
+    ],
+    "ips": [
+      {"address": "10.1.0.5/24", "interface": 0}
+    ],
+    "routes": [
+      {"dst": "0.0.0.0/0", "gw": "10.1.0.1"}
+    ]
+  }
+}

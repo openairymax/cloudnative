@@ -1,0 +1,11 @@
+{
+  "cniVersion": "0.2.0",
+  "name": "agentrt",
+  "type": "airymaxos-cni",
+  "prevResult": {
+    "cniVersion": "0.2.0",
+    "ips": [
+      {"address": "10.9.0.7/24"}
+    ]
+  }
+}
